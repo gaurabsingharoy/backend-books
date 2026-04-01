@@ -213,6 +213,30 @@ app.post("/books/title/:bookTitle", async (req, res)=>{
     }
 })
 
+// Function to delete a book by its ID
+async function deleteBookById(bookId) {
+    try {
+        const deletedBook = await Book.findByIdAndDelete(bookId);
+        return deletedBook;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// API route to delete a book by its ID
+app.delete("/books/:bookId", async (req, res) => {
+    try {
+        const deletedBook = await deleteBookById(req.params.bookId);
+        if (deletedBook) {
+            res.status(200).json({ message: "Book deleted successfully", book: deletedBook });
+        } else {
+            res.status(404).json({ error: "Book not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete book" });
+    }
+})
+
 const PORT = 7000
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`)
